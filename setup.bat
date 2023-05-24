@@ -1,3 +1,6 @@
+REM Install setup tools
+python -m pip install --upgrade pip setuptools virtualenv
+
 REM Create virtual environment
 python -m venv env
 
