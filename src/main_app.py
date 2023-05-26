@@ -15,6 +15,7 @@ class MainApp(MDApp):
         """
         super().__init__(**kwargs)
         Config.set('kivy','window_icon',config.get_icon("icon"))
+        
         # Loading the floating button data, currently RSA and DSA + ElGamal
         self.floating_button_data = {
             "RSA" : [
@@ -30,6 +31,7 @@ class MainApp(MDApp):
                 'on_press', lambda this: self.dsa_clicked()
             ]
         }
+
         # Load all components in builder
         for kv_component in config.get_all_components():
             self.icon = config.get_icon("icon")
