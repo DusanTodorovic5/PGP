@@ -1,6 +1,8 @@
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from components import FloatingButton
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button.button import MDFlatButton
 from kivy.config import Config
 
 import config
@@ -14,6 +16,7 @@ class MainApp(MDApp):
         Loads the icon, flotaing button data and all of the components avaliable
         """
         super().__init__(**kwargs)
+        self.dialog = None
         Config.set('kivy','window_icon',config.get_icon("icon"))
         
         # Loading the floating button data, currently RSA and DSA + ElGamal
@@ -47,11 +50,36 @@ class MainApp(MDApp):
         self.icon = 'security'
         self.theme_cls.primary_palette = "DeepPurple"
 
-    def rsa_click(self):
-        """Callback for floating button RSA option"""
-        print("RSA CLICKED")
+    def new_key_pair_click(self):
+        """Callback for creating new pair of keys"""
+        if not self.dialog:
+            tmp = MDDialog(
+                title = "Generate new pair of keys",
+                type="confirmation",
+                text="This will reset your device to its default factory settings.",
+                buttons=[
+                    MDFlatButton(
+                        text="CANCEL",
+                        theme_text_color="Custom",
+                        text_color=self.theme_cls.primary_color,
+                        on_release=lambda x, close_dialog=MainApp.close_dialog, this=self: close_dialog(this)
+                    ),
+                    MDFlatButton(
+                        text="OK",
+                        theme_text_color="Custom",
+                        text_color=self.theme_cls.primary_color,
+                        on_press=lambda x, close_dialog=MainApp.close_dialog, this=self: close_dialog(this)
+                    ),
+                ],
+                on_dismiss=lambda x, close_dialog=MainApp.release_dialog, this=self: close_dialog(this)
+            )
+            self.dialog = tmp
+            self.dialog.open()
 
-    def dsa_clicked(self):
-        """Callback for floating button DSA+ElGamal option"""
-        print("DSA CLICKED")
+    def close_dialog(self):
+        if self.dialog:
+            self.dialog.dismiss(force=True)
 
+    def release_dialog(self):
+        self.dialog = None
+            
