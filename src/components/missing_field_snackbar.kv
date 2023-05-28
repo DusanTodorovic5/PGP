@@ -1,0 +1,20 @@
+<CustomBaseSnackbar@BaseSnackbar>
+    duration: 1
+    text: "Field missing!"
+    MDLabel:
+        size_hint_y: None
+        height: self.texture_size[1]
+        text: root.text
+        font_size: "20sp"
+        theme_text_color: 'Custom'
+        text_color: get_color_from_hex('ffffff')
+        shorten: True
+        shorten_from: 'right'
+        pos_hint: {'center_y': .5}
+
+
+<MissingFieldSnackbar@CustomBaseSnackbar>
+    text: "Field missing!"
+
+<NonMatchingPasswordsSnackbar@CustomBaseSnackbar>
+    text: "Passwords do not match!"

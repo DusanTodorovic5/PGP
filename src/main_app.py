@@ -1,10 +1,9 @@
 from kivy.lang import Builder
 from kivymd.app import MDApp
-from components import FloatingButton, DialogContent
+from components import FloatingButton, DialogContent, MissingFieldSnackbar, PasswordDialog, NonMatchingPasswordsSnackbar
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button.button import MDFlatButton
 from kivy.config import Config
-
 
 import config
 
@@ -19,7 +18,6 @@ class MainApp(MDApp):
         super().__init__(**kwargs)
         self.dialog = None
         Config.set('kivy','window_icon',config.get_icon("icon"))
-
 
         # Load all components in builder
         for kv_component in config.get_all_components():
@@ -48,19 +46,43 @@ class MainApp(MDApp):
                         text="CANCEL",
                         theme_text_color="Custom",
                         text_color=self.theme_cls.primary_color,
-                        on_release=lambda x, close_dialog=MainApp.close_dialog, this=self: close_dialog(this)
+                        on_release=lambda x, this=self: MainApp.close_dialog(this)
                     ),
                     MDFlatButton(
                         text="GENERATE",
                         theme_text_color="Custom",
                         text_color=self.theme_cls.primary_color,
-                        on_press=lambda x, generate_keys=MainApp.generate_keys, this=self: generate_keys(this)
+                        on_press=lambda x, this=self: MainApp.enter_password(this)
                     ),
                 ],
-                on_dismiss=lambda x, close_dialog=MainApp.release_dialog, this=self: close_dialog(this)
+                on_dismiss=lambda x, this=self: MainApp.release_dialog(this)
             )
             self.dialog = tmp
             self.dialog.open()
+
+    def open_password_dialog(self, data):
+        tmp = MDDialog(
+            title = "Enter keys password",
+            type="custom",
+            content_cls = PasswordDialog(),
+            buttons=[
+                MDFlatButton(
+                    text="CANCEL",
+                    theme_text_color="Custom",
+                    text_color=self.theme_cls.primary_color,
+                    on_release=lambda x, this=self: MainApp.close_dialog(this)
+                ),
+                MDFlatButton(
+                    text="OK",
+                    theme_text_color="Custom",
+                    text_color=self.theme_cls.primary_color,
+                    on_press=lambda x, this=self: MainApp.generate_keys(this, data)
+                ),
+            ],
+            on_dismiss=lambda x, this=self: MainApp.release_dialog(this)
+        )
+        self.dialog = tmp
+        self.dialog.open()
 
     def close_dialog(self):
         if self.dialog:
@@ -69,6 +91,32 @@ class MainApp(MDApp):
     def release_dialog(self):
         self.dialog = None
 
-    def generate_keys(self):
-        pass
+    def enter_password(self):
+        if self.dialog:
+            data = self.dialog.content_cls.get_data()
+            print(data)
+
+            if data["name"] == "" or data["email"] == "":
+                MissingFieldSnackbar().open()
+                return
+
+            self.dialog.dismiss(force=True)
+            self.open_password_dialog(data)
+
+    def generate_keys(self, data):
+        if self.dialog:
+            passwords = self.dialog.content_cls.get_data()
+            print(passwords)
+            print(data)
+
+            if passwords["password"] != passwords["confirm_password"] or passwords["password"] == "":
+                NonMatchingPasswordsSnackbar().open()
+                return
             
+            self.dialog.dismiss(force=True)
+
+
+
+
+
+

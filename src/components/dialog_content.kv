@@ -7,13 +7,20 @@
     height: "200dp"
 
     MDTextField:
+        id: name_field
         hint_text: "Name"
 
     MDTextField:
+        id: email_field
         hint_text: "Email"
 
     MDDropDownItem:
-        id: drop_item
+        id: algorithm_drop_item
         text: "RSA"
-        on_release: root.open_item()
+        on_release: root.algorithm_open_item()
+
+    MDDropDownItem:
+        id: key_size_drop_item
+        text: "1024"
+        on_release: root.key_size_open_item()
         
