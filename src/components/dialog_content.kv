@@ -4,13 +4,16 @@
     orientation: "vertical"
     spacing: "12dp"
     size_hint_y: None
+    height: "200dp"
 
     MDTextField:
         hint_text: "Name"
 
     MDTextField:
-        hint_text: "EMail"
+        hint_text: "Email"
 
-    MDDropDownMenu:
-        text: "Chose your algorithm"
+    MDDropDownItem:
+        id: drop_item
+        text: "RSA"
+        on_release: root.open_item()
         

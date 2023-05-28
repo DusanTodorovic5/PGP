@@ -1,9 +1,10 @@
 from kivy.lang import Builder
 from kivymd.app import MDApp
-from components import FloatingButton
+from components import FloatingButton, DialogContent
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button.button import MDFlatButton
 from kivy.config import Config
+
 
 import config
 
@@ -18,22 +19,7 @@ class MainApp(MDApp):
         super().__init__(**kwargs)
         self.dialog = None
         Config.set('kivy','window_icon',config.get_icon("icon"))
-        
-        # Loading the floating button data, currently RSA and DSA + ElGamal
-        self.floating_button_data = {
-            "RSA" : [
-                "lock-check",
-                'allow_stretch', False,
-                'keep_ratio', True,
-                'on_press', lambda this: self.rsa_click()
-            ],
-            "DSA + ElGamal" : [
-                "lock-check",
-                'allow_stretch', False,
-                'keep_ratio', True,
-                'on_press', lambda this: self.dsa_clicked()
-            ]
-        }
+
 
         # Load all components in builder
         for kv_component in config.get_all_components():
@@ -55,8 +41,8 @@ class MainApp(MDApp):
         if not self.dialog:
             tmp = MDDialog(
                 title = "Generate new pair of keys",
-                type="confirmation",
-                text="This will reset your device to its default factory settings.",
+                type="custom",
+                content_cls = DialogContent(),
                 buttons=[
                     MDFlatButton(
                         text="CANCEL",
@@ -65,10 +51,10 @@ class MainApp(MDApp):
                         on_release=lambda x, close_dialog=MainApp.close_dialog, this=self: close_dialog(this)
                     ),
                     MDFlatButton(
-                        text="OK",
+                        text="GENERATE",
                         theme_text_color="Custom",
                         text_color=self.theme_cls.primary_color,
-                        on_press=lambda x, close_dialog=MainApp.close_dialog, this=self: close_dialog(this)
+                        on_press=lambda x, generate_keys=MainApp.generate_keys, this=self: generate_keys(this)
                     ),
                 ],
                 on_dismiss=lambda x, close_dialog=MainApp.release_dialog, this=self: close_dialog(this)
@@ -82,4 +68,7 @@ class MainApp(MDApp):
 
     def release_dialog(self):
         self.dialog = None
+
+    def generate_keys(self):
+        pass
             
