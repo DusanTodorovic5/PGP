@@ -4,6 +4,9 @@ from components import FloatingButton, DialogContent, MissingFieldSnackbar, Pass
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button.button import MDFlatButton
 from kivy.config import Config
+from rsa_algorithm import RSAPGP
+from dsa_el_gamal_algorithm import DSAElGamalPGP
+from cryptography.hazmat.primitives import serialization
 
 import config
 
@@ -18,6 +21,18 @@ class MainApp(MDApp):
         super().__init__(**kwargs)
         self.dialog = None
         Config.set('kivy','window_icon',config.get_icon("icon"))
+
+       
+        encryption_algorithm = DSAElGamalPGP()
+          
+        # encryption_algorithm = DSAElGamalPGP()
+
+        keys = encryption_algorithm.generate_keys(2048)
+
+        decoded_keys = encryption_algorithm.decode_keys(keys["sign"])
+        print(decoded_keys)
+
+        
 
         # Load all components in builder
         for kv_component in config.get_all_components():
@@ -52,7 +67,7 @@ class MainApp(MDApp):
                         text="GENERATE",
                         theme_text_color="Custom",
                         text_color=self.theme_cls.primary_color,
-                        on_press=lambda x, this=self: MainApp.enter_password(this)
+                        on_release=lambda x, this=self: MainApp.enter_password(this)
                     ),
                 ],
                 on_dismiss=lambda x, this=self: MainApp.release_dialog(this)
@@ -76,7 +91,7 @@ class MainApp(MDApp):
                     text="OK",
                     theme_text_color="Custom",
                     text_color=self.theme_cls.primary_color,
-                    on_press=lambda x, this=self: MainApp.generate_keys(this, data)
+                    on_release=lambda x, this=self: MainApp.generate_keys(this, data)
                 ),
             ],
             on_dismiss=lambda x, this=self: MainApp.release_dialog(this)
@@ -113,7 +128,16 @@ class MainApp(MDApp):
                 NonMatchingPasswordsSnackbar().open()
                 return
             
-            
+            encryption_algorithm = None
+
+            if data["algorithm"] == "RSA":
+                encryption_algorithm = RSAPGP()
+            else:
+                encryption_algorithm = DSAElGamalPGP()
+
+            keys = encryption_algorithm.generate_keys(data["size"])
+
+            print(keys)
             
             self.dialog.dismiss(force=True)
 

@@ -4,6 +4,8 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
 from random import getrandbits
 import zlib
+from cryptography.hazmat.primitives import serialization
+
 class PGP:
     def encrypt(self, plaintext, private_key_a, public_key_b, algorithm) -> bytes:
         """Template method for encryption"""
@@ -140,6 +142,23 @@ class PGP:
     def generate_keys(self, key_size) -> bytes:
         """Virtual method for generating pair of keys"""
         pass
+    
+    def decode_keys(self, keys) -> bytes:
+        private_pem = keys["private"].private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption()
+        )
+
+        public_pem = keys["public"].public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+
+        return {
+            "private": private_pem.decode(),
+            "public": public_pem.decode()
+        }
     
     # def hash_encrypt(self, hash, private_key) -> bytes:
     #     """Virtual method for encrypting hash using private key of sender - Signing"""

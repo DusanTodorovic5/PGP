@@ -66,8 +66,12 @@ class RSAPGP (PGP):
         )
 
         return {
-            "key_a" : {
+            "sign": {
                 "private": key_a,
                 "public": key_a.public_key()
             },
+            "encryption": {
+                "private": key_b,
+                "public": key_b.public_key()
+            }
         }

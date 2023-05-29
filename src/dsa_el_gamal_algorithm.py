@@ -1,7 +1,6 @@
 from pgp import PGP
-from cryptography.hazmat.primitives.asymmetric import elgamal, dsa
+from cryptography.hazmat.primitives.asymmetric import dsa
 from cryptography.hazmat.primitives.hashes import SHA1
-
 class DSAElGamalPGP (PGP):
     def session_key_encrypt(self, session_key, public_key) -> bytes:
         """Derived method for encrypting session key using public key of reciever"""
@@ -36,5 +35,27 @@ class DSAElGamalPGP (PGP):
         except:
             return False
         
-    def generate_keys(self) -> bytes:
-        pass
+    def generate_keys(self, key_size) -> bytes:
+        key_a = dsa.generate_private_key(
+            key_size=key_size
+        )
+
+        # key_b = elgamal.generate_private_key(
+        #     public_exponent=65537,
+        #     key_size=key_size
+        # )
+
+        # key_b = ElGamal.generate(key_size, get_random_bytes)
+
+        key_b = 0
+
+        return {
+            "sign": {
+                "private": key_a,
+                "public": key_a.public_key()
+            },
+            "encryption": {
+                "private": key_b,
+                "public": key_b
+            }
+        }
