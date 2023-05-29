@@ -113,6 +113,8 @@ class MainApp(MDApp):
                 NonMatchingPasswordsSnackbar().open()
                 return
             
+            
+            
             self.dialog.dismiss(force=True)
 
 

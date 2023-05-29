@@ -35,3 +35,6 @@ class DSAElGamalPGP (PGP):
             return True
         except:
             return False
+        
+    def generate_keys(self) -> bytes:
+        pass

@@ -53,3 +53,21 @@ class RSAPGP (PGP):
             return True
         except:
             return False
+        
+    def generate_keys(self, key_size) -> bytes:
+        key_a = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=key_size
+        )
+
+        key_b = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=key_size
+        )
+
+        return {
+            "key_a" : {
+                "private": key_a,
+                "public": key_a.public_key()
+            },
+        }

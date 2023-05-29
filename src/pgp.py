@@ -137,6 +137,10 @@ class PGP:
     def verify(self, signature, message, public_key) -> bytes:
         return ""
     
+    def generate_keys(self, key_size) -> bytes:
+        """Virtual method for generating pair of keys"""
+        pass
+    
     # def hash_encrypt(self, hash, private_key) -> bytes:
     #     """Virtual method for encrypting hash using private key of sender - Signing"""
     #     return ""
