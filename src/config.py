@@ -17,6 +17,7 @@ def get_all_components() -> list:
         os.path.join(config["PGP"]["components_path"], kv_file)
         for kv_file 
         in os.listdir(config["PGP"]["components_path"])
+        if kv_file.endswith(".kv")
     ]
 
 # Returns the path of a screen given

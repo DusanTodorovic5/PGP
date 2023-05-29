@@ -47,11 +47,6 @@ class PGP:
             return rest_message
         else:
             return "Error: failed while verifying"
-
-    
-    # def hash(self, message) -> bytes:
-    #     """Final Method for hashing message using SHA-1 algorithm"""
-    #     return compute_hash(message, "SHA-1")
     
     def deflate(self, message) -> bytes:
         """Compresses message using zip algorithm"""
@@ -111,19 +106,6 @@ class PGP:
         left_side = message[:size / 8]
         right_side = message[size / 8:]
         return left_side, right_side
-
-    # def verify(self, message, public_key) -> bytes:
-    #     """Method for verifying message"""
-
-    #     # Extract fist 160 bits for hash and rest for message
-    #     encrypted_hash, rest_message = self.divide_message(message, 160)
-    #     decrypted_hash = self.hash_decrypt(encrypted_hash, public_key)
-    #     message_hash = self.hash(rest_message)
-
-    #     if message_hash == decrypted_hash:
-    #         return rest_message
-    #     else:
-    #         return "Error: failed to verify"
         
     def session_key_encrypt(self, session_key, public_key) -> bytes:
         """Virtual method for encrypting session key using public key of reciever"""

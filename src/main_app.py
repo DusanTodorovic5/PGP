@@ -1,12 +1,16 @@
 from kivy.lang import Builder
 from kivymd.app import MDApp
-from components import FloatingButton, DialogContent, MissingFieldSnackbar, PasswordDialog, NonMatchingPasswordsSnackbar
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button.button import MDFlatButton
 from kivy.config import Config
 from rsa_algorithm import RSAPGP
 from dsa_el_gamal_algorithm import DSAElGamalPGP
 from cryptography.hazmat.primitives import serialization
+
+from components.floating_button import FloatingButton
+from components.dialog_content import DialogContent
+from components.snackbar import MissingFieldSnackbar, NonMatchingPasswordsSnackbar
+from components.password_dialog import PasswordDialog
 
 import config
 
@@ -31,8 +35,6 @@ class MainApp(MDApp):
 
         decoded_keys = encryption_algorithm.decode_keys(keys["sign"])
         print(decoded_keys)
-
-        
 
         # Load all components in builder
         for kv_component in config.get_all_components():

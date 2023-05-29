@@ -1,28 +1,5 @@
-from kivymd.uix.tooltip import MDTooltip
-from kivymd.uix.button.button import MDFloatingBottomButton
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.label import MDLabel
-from kivy.properties import StringProperty
-from kivymd.uix.snackbar import BaseSnackbar
-
-# Define custom components that we are going to use from kivy
-
-class FloatingButton(MDFloatingBottomButton, MDTooltip):
-    """
-    A class to represent FloatingButton component. 
-    This class is empty and will be used by Kivy framework
-    """
-    pass
-
-class CustomBaseSnackbar(BaseSnackbar):
-    text = StringProperty("")
-
-class MissingFieldSnackbar(CustomBaseSnackbar):
-    pass
-
-class NonMatchingPasswordsSnackbar(CustomBaseSnackbar):
-    pass
 
 class DialogContent(BoxLayout):
     def __init__(self, **kwargs):
@@ -103,14 +80,4 @@ class DialogContent(BoxLayout):
             "email": self.ids.email_field.text,
             "algorithm": self.current_item,
             "size": self.current_size
-        }
-    
-class PasswordDialog(BoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def get_data(self):
-        return {
-            "password": self.ids.password_field.text,
-            "confirm_password": self.ids.confirm_field.text
         }

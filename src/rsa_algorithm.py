@@ -26,14 +26,6 @@ class RSAPGP (PGP):
                 label=None
             )
         )
-    
-    # def hash_encrypt(self, hash, private_key) -> bytes:
-    #     """Derived method for encrypting hash using private key of sender - Signing"""
-    #     return rsa.encrypt(hash, private_key)
-    
-    # def hash_decrypt(self, encrypted_hash, public_key) -> bytes:
-    #     """Derived method for decrypting hash from message"""
-    #     return rsa.decrypt(encrypted_hash, public_key)
 
     def sign(self, message, private_key) -> bytes:
         return private_key.sign(
