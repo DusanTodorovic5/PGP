@@ -1,4 +1,3 @@
-import time
 from cryptography.hazmat.primitives.ciphers import algorithms, base, modes
 from cryptography.hazmat.primitives import padding
 from random import getrandbits
@@ -39,12 +38,6 @@ class PrivateKeyRing:
         pass
 
     def create_table(private_key_rings):
-        row_data=[
-                private_ring.create_table_row() 
-                for private_ring 
-                in private_key_rings
-            ]
-        
 
         data_tables = MDDataTable(
             column_data=[

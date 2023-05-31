@@ -12,9 +12,9 @@ from components.floating_button import FloatingButton
 from components.dialog_content import DialogContent
 from components.snackbar import MissingFieldSnackbar, NonMatchingPasswordsSnackbar
 from components.password_dialog import PasswordDialog
-from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
 from private_key_ring import PrivateKeyRing
+from public_key_ring import PublicKeyRing
 
 import config
 
@@ -31,6 +31,7 @@ class MainApp(MDApp):
         Config.set('kivy','window_icon',config.get_icon("icon"))
 
         self.private_key_rings = PrivateKeyRing.load_private_key_rings()
+        self.public_key_rings = PublicKeyRing.load_public_key_rings()
 
         # encryption_algorithm = DSAElGamalPGP()
           
@@ -58,6 +59,10 @@ class MainApp(MDApp):
 
         self.root.ids.main_screen_app.add_widget(
             PrivateKeyRing.create_table(self.private_key_rings)
+        )
+
+        self.root.ids.main_screen_app.add_widget(
+            PublicKeyRing.create_table(self.public_key_rings)
         )
 
 
