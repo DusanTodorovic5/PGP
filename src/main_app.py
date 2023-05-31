@@ -12,6 +12,8 @@ from components.dialog_content import DialogContent
 from components.snackbar import MissingFieldSnackbar, NonMatchingPasswordsSnackbar
 from components.password_dialog import PasswordDialog
 
+from private_key_ring import PrivateKeyRing
+
 import config
 
 class MainApp(MDApp):
@@ -20,21 +22,22 @@ class MainApp(MDApp):
     """
     def __init__(self, **kwargs):
         """Constructor of MainApp. 
-        Loads the icon, flotaing button data and all of the components avaliable
+        Loads the icon, and all avaliable components
         """
         super().__init__(**kwargs)
         self.dialog = None
         Config.set('kivy','window_icon',config.get_icon("icon"))
 
-       
-        encryption_algorithm = DSAElGamalPGP()
+        self.private_key_rings = PrivateKeyRing.load_private_key_rings()
+
+        # encryption_algorithm = DSAElGamalPGP()
           
         # encryption_algorithm = DSAElGamalPGP()
 
-        keys = encryption_algorithm.generate_keys(2048)
+        # keys = encryption_algorithm.generate_keys(2048)
 
-        decoded_keys = encryption_algorithm.decode_keys(keys["sign"])
-        print(decoded_keys)
+        # decoded_keys = encryption_algorithm.decode_keys(keys["sign"])
+        # print(decoded_keys)
 
         # Load all components in builder
         for kv_component in config.get_all_components():
@@ -43,6 +46,9 @@ class MainApp(MDApp):
 
     def build(self):
         """Build method inherited from Kivy's MDApp"""
+        self.main_screen_app.add_widget(
+            PrivateKeyRing.create_table(self.private_key_rings)
+        )
         return Builder.load_file(config.get_screen("main_screen"))
     
     def on_start(self):
