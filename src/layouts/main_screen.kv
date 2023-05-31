@@ -1,8 +1,6 @@
 MDScreen:
-    id: main_screen_app
-    BoxLayout:
+    RelativeLayout:
+        id: main_screen_app
         padding: "10dp"
-        pos_hint: {"right": 1, "y": 0}
-        size_hint: None, None
-        size: self.minimum_size
         FloatingButton:
+            pos: root.width - self.width - dp(10),  self.height - dp(30)  # Set the position with 20-pixel margin

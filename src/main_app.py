@@ -6,12 +6,14 @@ from kivy.config import Config
 from rsa_algorithm import RSAPGP
 from dsa_el_gamal_algorithm import DSAElGamalPGP
 from cryptography.hazmat.primitives import serialization
-
+from kivymd.uix.boxlayout import BoxLayout
+from kivy.uix.anchorlayout import AnchorLayout
 from components.floating_button import FloatingButton
 from components.dialog_content import DialogContent
 from components.snackbar import MissingFieldSnackbar, NonMatchingPasswordsSnackbar
 from components.password_dialog import PasswordDialog
-
+from kivymd.uix.datatables import MDDataTable
+from kivy.metrics import dp
 from private_key_ring import PrivateKeyRing
 
 import config
@@ -46,9 +48,6 @@ class MainApp(MDApp):
 
     def build(self):
         """Build method inherited from Kivy's MDApp"""
-        self.main_screen_app.add_widget(
-            PrivateKeyRing.create_table(self.private_key_rings)
-        )
         return Builder.load_file(config.get_screen("main_screen"))
     
     def on_start(self):
@@ -56,6 +55,11 @@ class MainApp(MDApp):
         self.title = "PGP"
         self.icon = 'security'
         self.theme_cls.primary_palette = "DeepPurple"
+
+        self.root.ids.main_screen_app.add_widget(
+            PrivateKeyRing.create_table(self.private_key_rings)
+        )
+
 
     def new_key_pair_click(self):
         """Callback for creating new pair of keys"""

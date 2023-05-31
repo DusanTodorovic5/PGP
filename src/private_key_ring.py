@@ -4,14 +4,19 @@ from cryptography.hazmat.primitives import padding
 from random import getrandbits
 from cryptography.hazmat.backends import default_backend
 from kivymd.uix.datatables import MDDataTable
+from kivy.metrics import dp
 import json
 
 class PrivateKeyRing:
-    def __init__(self, public_key, private_key, email, password) -> None:
-        self.timestamp = time.time()
+    def __init__(self, timestamp, public_key, private_key, email, password=None) -> None:
+        self.timestamp = timestamp
         self.id = public_key[:-8]
         self.public_key = public_key
-        self.encrypted_private_key = self.encrypt_private_key(private_key, password)
+        if password:
+            self.encrypted_private_key = self.encrypt_private_key(private_key, password)
+        else:
+            self.encrypted_private_key = private_key
+
         self.user_id = email
 
     def encrypt_private_key(self, private_key, password):
@@ -34,36 +39,44 @@ class PrivateKeyRing:
         pass
 
     def create_table(private_key_rings):
+        row_data=[
+                private_ring.create_table_row() 
+                for private_ring 
+                in private_key_rings
+            ]
+        
+
         data_tables = MDDataTable(
-            use_pagination=True,
             column_data=[
-                ("No.","30dp"),
-                ("Timestamp", "30dp"),
-                ("Id", "60dp"),
-                ("Public key", "30dp"),
-                ("Encrypted private key", "30dp"),
-                ("User Id", "30dp"),
+                ("Timestamp", dp(20)),
+                ("Id", dp(20)),
+                ("Public key", dp(40)),
+                ("Encrypted private key", dp(40)),
+                ("User Id", dp(20)),
             ],
             row_data=[
                 private_ring.create_table_row() 
                 for private_ring 
                 in private_key_rings
             ],
-            sorted_on="Schedule",
-            sorted_order="ASC",
-            elevation=2,
+            size_hint=(1, 0.5),
+            pos_hint={"left":1, "y":0.5},
+            elevation=1
         )
 
         return data_tables
 
     def load_private_key_rings():
         """Loads the json file containing private key rings and returns array of PrivateKeyRing objects"""
-        private_ring_dict = json.load("private_key_rings")
+        json_file = open("private_key_rings", "r")
+
+        private_ring_dict = json.loads(json_file.read())
+
+        json_file.close()
 
         return [
             PrivateKeyRing(
                 entry["timestamp"],
-                entry["id"],
                 entry["public_key"],
                 entry["encrypted_private_key"],
                 entry["user_id"]
@@ -78,7 +91,6 @@ class PrivateKeyRing:
         for private_key_ring in private_key_rings:
             private_ring_dict.insert({
                 "timestamp": private_key_ring.timestamp,
-                "id": private_key_ring.id,
                 "public_key": private_key_ring.public_key,
                 "encrypted_private_key": private_key_ring.encrypted_private_key,
                 "user_id": private_key_ring.user_id
