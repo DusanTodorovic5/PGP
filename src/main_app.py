@@ -81,6 +81,12 @@ class MainApp(MDApp):
                         on_release=lambda x, this=self: MainApp.close_dialog(this)
                     ),
                     MDFlatButton(
+                        text="IMPORT PUBLIC KEY",
+                        theme_text_color="Custom",
+                        text_color=self.theme_cls.primary_color,
+                        on_release=lambda x, this=self: MainApp.close_dialog(this)
+                    ),
+                    MDFlatButton(
                         text="GENERATE",
                         theme_text_color="Custom",
                         text_color=self.theme_cls.primary_color,

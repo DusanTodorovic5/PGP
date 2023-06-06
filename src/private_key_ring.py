@@ -5,6 +5,7 @@ from cryptography.hazmat.backends import default_backend
 from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
 import json
+from kivymd.uix.button.button import MDFlatButton
 
 class PrivateKeyRing:
     def __init__(self, timestamp, public_key, private_key, email, password=None) -> None:
@@ -46,6 +47,7 @@ class PrivateKeyRing:
                 ("Public key", dp(40)),
                 ("Encrypted private key", dp(40)),
                 ("User Id", dp(20)),
+                ("Export", dp(20)),
             ],
             row_data=[
                 private_ring.create_table_row() 
@@ -99,4 +101,9 @@ class PrivateKeyRing:
                 self.public_key,
                 self.encrypted_private_key,
                 self.user_id,
+                MDFlatButton(
+                        text="IMPORT PUBLIC KEY",
+                        theme_text_color="Custom",
+                        on_release=lambda x: print("tadaa")
+                    ),
             )
