@@ -11,10 +11,10 @@ class RSAPGP (PGP):
         """Derived method for encrypting session key using public key of reciever"""
         # return rsa.encrypt(session_key, public_key)
         cipher = PKCS1_OAEP.new(
-            RSA.import_key(public_key)
+            RSA.import_key(f"-----BEGIN PUBLIC KEY-----\n{public_key}\n-----END PUBLIC KEY-----")
         )
 
-        return cipher.encrypt(session_key.encode())
+        return cipher.encrypt(session_key)
     
     def session_key_decrypt(self, encrypted_session_key, private_key) -> bytes:
         """Derived method for decrypting session key using private key of receiver"""

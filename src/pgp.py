@@ -6,6 +6,7 @@ from random import getrandbits
 import zlib
 from cryptography.hazmat.primitives import serialization
 from Crypto.Cipher import CAST, AES
+from Crypto.Random import get_random_bytes
 
 class PGP:
     def encrypt(self, plaintext, private_key_a, public_key_b, algorithm) -> bytes:
@@ -13,38 +14,36 @@ class PGP:
         # message_hash = self.hash(plaintext)
 
         # encrypted_hash = self.hash_encrypt(message_hash, private_key_a)
-        new_message = plaintext
+        new_message = plaintext.encode()
         if private_key_a is not None:
             # !! POGLEDAJ MESSAGE ENCRYPT I DECRYPT RADE LI
-            encrypted_hash = self.sign(plaintext, private_key_a)
+            encrypted_hash = self.sign(plaintext, private_key_a.private_key)
 
             new_message = self.concate(encrypted_hash, plaintext)
             new_message = self.concate(private_key_a.key_id, new_message)
-            new_message = self.concate("1", new_message)
+            new_message = self.concate("1\n".encode(), new_message)
         else:
-            new_message = self.concate("0", new_message)
+            new_message = self.concate("0\n".encode(), new_message)
 
         compressed_message = self.deflate(new_message)
 
         final_message = compressed_message
         if public_key_b is not None:
-            session_key = getrandbits(128)
             # !! POGLEDAJ MESSAGE ENCRYPT I DECRYPT RADE LI
-            encrypted_message = self.message_encrypt(compressed_message, session_key, algorithm)
+            encrypted_message, session_key = self.message_encrypt(compressed_message, algorithm)
 
-            encrypted_session_key = self.session_key_encrypt(session_key, public_key_b)
+            encrypted_session_key = self.session_key_encrypt(session_key, public_key_b.public_key)
 
             final_message = self.concate(encrypted_session_key, encrypted_message)
 
-            final_message = self.concate(public_key_b.key_id, final_message)
-            final_message = self.concate(algorithm, final_message)
-            final_message = self.concate("1", final_message)
+            final_message = self.concate(public_key_b.key_id.encode(), final_message)
+            final_message = self.concate(algorithm.encode(), final_message)
+            final_message = self.concate("1".encode(), final_message)
         else:
-            final_message = self.concate("0", final_message)
+            final_message = self.concate("0".encode(), final_message)
 
-        # RADIX
-
-        return final_message
+        # RADIX je .hex()
+        return final_message.hex()
 
     def decrypt(self, ciphertext, private_key_b, public_key_a, algorithm) -> bytes:
         """Template method for decryption"""
@@ -73,17 +72,18 @@ class PGP:
         """Inflates received message using zip algorithm"""
         return zlib.decompress(message)
     
-    def message_encrypt(self, message, session_key, algorithm) -> bytes:
+    def message_encrypt(self, message, algorithm) -> bytes:
         """Final method for encrypting message with session key"""
         cipher = None
+        session_key = get_random_bytes(16)
         if algorithm == "Cast5":
             cipher = CAST.new(session_key, CAST.MODE_OPENPGP)
-            return cipher.encrypt(message)
+            return cipher.encrypt(message), session_key
         else: 
             # AES128
             cipher = AES.new(session_key, AES.MODE_OPENPGP)
             ciphertext, tag = cipher.encrypt_and_digest(message)
-            return ciphertext
+            return ciphertext, session_key
 
     def message_decrypt(self, message, session_key, algorithm) -> bytes:
         """Final method for decrypting message using session_key"""
