@@ -1,50 +1,43 @@
 from pgp import PGP
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives.hashes import SHA1
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256
 
 class RSAPGP (PGP):
     def session_key_encrypt(self, session_key, public_key) -> bytes:
         """Derived method for encrypting session key using public key of reciever"""
         # return rsa.encrypt(session_key, public_key)
-        return public_key.encrypt(
-            session_key,
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=SHA1()),
-                algorithm=SHA1(),
-                label=None
-            )
+        cipher = PKCS1_OAEP.new(
+            RSA.import_key(public_key)
         )
+
+        return cipher.encrypt(session_key.encode())
     
     def session_key_decrypt(self, encrypted_session_key, private_key) -> bytes:
         """Derived method for decrypting session key using private key of receiver"""
-        # return rsa.decrypt(encrypted_session_key, private_key)
-        return private_key.decrypt(
-            encrypted_session_key,
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=SHA1()),
-                algorithm=SHA1(),
-                label=None
-            )
+        cipher = PKCS1_OAEP.new(
+            RSA.import_key(private_key)
         )
+
+        return cipher.decrypt(encrypted_session_key.encode())
 
     def sign(self, message, private_key) -> bytes:
-        return private_key.sign(
-            message,
-            padding.PKCS1v15(),
-            SHA1()
+        hasher = SHA256.new()
+
+        hasher.update(message.encode())
+
+        signer = pkcs1_15.new(
+            RSA.import_key(private_key)
         )
 
+        return signer.sign(hasher)
+
     def verify(self, signature, message, public_key) -> bytes:
-        try:
-            public_key.verify(
-                signature,
-                message,
-                padding.PKCS1v15(),
-                SHA1()
-            )
-            return True
-        except:
-            return False
+        verifier = pkcs1_15.new(public_key)
+        return True if verifier.verify(signature, message) else False
         
     def generate_keys(self, key_size) -> bytes:
         key_a = rsa.generate_private_key(
