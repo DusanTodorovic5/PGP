@@ -116,9 +116,11 @@ class PGP:
         return ""
     
     def sign(self, message, private_key) -> bytes:
+        """Virtual method for signing message with private key"""
         return ""
 
     def verify(self, signature, message, public_key) -> bytes:
+        """Virtual method for verifing signed message using public key"""
         return ""
     
     def generate_keys(self, key_size) -> bytes:

@@ -1,0 +1,9 @@
+[
+  {
+    "timestamp": 1687007500.0091188,
+    "public_key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDVbJlpKLlFH+OFUcWwimXBf8OuV5RdeFkbspWwQmZaJjYpnqXdXDvYbblJZr2iTMcTxqgJ46swibuvk/Gt0lszy+KLpHoDDBI8t8MqzOf6TXAkf9i6DMOFaJb+jrWhc8gmW671ChB38k6ZfG4cVQsFzNkrt0ikFO+ab2jME5yHrwIDAQAB",
+    "user_id": "slavica@yahoo.hu",
+    "algorithm": "RSA",
+    "key_type": "Sign"
+  }
+]

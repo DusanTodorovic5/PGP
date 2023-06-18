@@ -1,0 +1,9 @@
+[
+  {
+    "timestamp": 1687005917.600346,
+    "public_key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDB2b9iMQdbk4iipzRkwoxxqfU7MOH1pJO1LlNvb4LH4wnTxzXU53s9zzI6CAzrViVLq1xvVs1Vhh7Uuq+aAumbtE3hXB4wivz8KhWf6UvAM0ChPDF1T4+p8uwJ2k0PQkkKLQxFbflFlL2ytN6EIhBoQwK9n2RZD60gy7HyrzwydQIDAQAB",
+    "user_id": "sifra@dusan.com",
+    "algorithm": "RSA",
+    "key_type": "Encryption"
+  }
+]

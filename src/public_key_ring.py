@@ -4,48 +4,20 @@ from cryptography.hazmat.primitives.ciphers import algorithms, base, modes
 from cryptography.hazmat.primitives import padding
 from random import getrandbits
 from cryptography.hazmat.backends import default_backend
-from kivymd.uix.datatables import MDDataTable
-from kivy.metrics import dp
 import json
 
 class PublicKeyRing:
-    def __init__(self, timestamp, public_key, email) -> None:
+    def __init__(self, timestamp, public_key, email, algorithm, key_type) -> None:
         self.timestamp = timestamp
-        self.id = public_key[:-8]
-        self.public_key = public_key
-        self.owner_trust = None
+        self.public_key = public_key.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "").replace("\n", "").strip()
+        self.id = self.public_key[-8:]
         self.user_id = email
-        self.key_legitimacy = None
-        self.signature = None
-        self.signature_trust = None
+        self.algorithm = algorithm
+        self.key_type = key_type
 
-    def create_table(public_key_rings):
-        data_tables = MDDataTable(
-            column_data=[
-                ("Timestamp", dp(20)),
-                ("Id", dp(20)),
-                ("Public key", dp(40)),
-                ("Owner trust", dp(10)),
-                ("User Id", dp(20)),
-                ("Key legitimacy", dp(10)),
-                ("Signature", dp(10)),
-                ("Signature trust", dp(10)),
-            ],
-            row_data=[
-                public_ring.create_table_row() 
-                for public_ring 
-                in public_key_rings
-            ],
-            size_hint=(1, 0.5),
-            pos_hint={"left":1, "y":0.1},
-            elevation=1
-        )
-
-        return data_tables
-
-    def load_public_key_rings():
+    def load_public_key_rings(user):
         """Loads the json file containing private key rings and returns array of PrivateKeyRing objects"""
-        json_file = open("public_key_rings", "r")
+        json_file = open(f"users/{user}/public_key_rings", "r")
 
         public_ring_dict = json.loads(json_file.read())
 
@@ -55,33 +27,35 @@ class PublicKeyRing:
             PublicKeyRing(
                 entry["timestamp"],
                 entry["public_key"],
-                entry["user_id"]
+                entry["user_id"],
+                entry["algorithm"],
+                entry["key_type"]
             ) 
             for entry
             in public_ring_dict
         ]
     
-    def save_private_key_rings(public_key_rings):
+    def save_public_key_rings(public_key_rings, user):
         public_ring_dict = []
 
         for public_key_ring in public_key_rings:
-            public_ring_dict.insert({
+            public_ring_dict.append({
                 "timestamp": public_key_ring.timestamp,
                 "public_key": public_key_ring.public_key,
-                "user_id": public_key_ring.user_id
+                "user_id": public_key_ring.user_id,
+                "algorithm": public_key_ring.algorithm,
+                "key_type": public_key_ring.key_type
             })
 
-        with open("public_key_rings", "w") as file:
+        with open(f"users/{user}/public_key_rings", "w") as file:
             json.dump(public_ring_dict, file)
 
     def create_table_row(self):
         return (
-                self.timestamp,
-                self.id,
-                self.public_key,
-                self.owner_trust,
-                self.user_id,
-                self.key_legitimacy,
-                self.signature,
-                self.signature_trust
-            )
+            self.algorithm,
+            self.key_type,
+            self.timestamp,
+            self.id,
+            self.public_key,
+            self.user_id
+        )
