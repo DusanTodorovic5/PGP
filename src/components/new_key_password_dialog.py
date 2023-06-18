@@ -25,7 +25,6 @@ class NewKeyPasswordDialog(simpledialog.Dialog):
             self.field2_entry.grid(row=1, column=1, padx=5, pady=5)
 
         def buttonbox(self):
-            # Create the buttons
             box = ttk.Frame(self)
 
             self.cancel_button = ttk.Button(box, text="Cancel", command=self.cancel)

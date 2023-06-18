@@ -5,6 +5,7 @@ from cryptography.hazmat.backends import default_backend
 from random import getrandbits
 import zlib
 from cryptography.hazmat.primitives import serialization
+from Crypto.Cipher import CAST, AES
 
 class PGP:
     def encrypt(self, plaintext, private_key_a, public_key_b, algorithm) -> bytes:
@@ -12,20 +13,36 @@ class PGP:
         # message_hash = self.hash(plaintext)
 
         # encrypted_hash = self.hash_encrypt(message_hash, private_key_a)
+        new_message = plaintext
+        if private_key_a is not None:
+            # !! POGLEDAJ MESSAGE ENCRYPT I DECRYPT RADE LI
+            encrypted_hash = self.sign(plaintext, private_key_a)
 
-        encrypted_hash = self.sign(plaintext, private_key_a)
-
-        new_message = self.concate(encrypted_hash, plaintext)
+            new_message = self.concate(encrypted_hash, plaintext)
+            new_message = self.concate(private_key_a.key_id, new_message)
+            new_message = self.concate("1", new_message)
+        else:
+            new_message = self.concate("0", new_message)
 
         compressed_message = self.deflate(new_message)
 
-        session_key = getrandbits(128)
+        final_message = compressed_message
+        if public_key_b is not None:
+            session_key = getrandbits(128)
+            # !! POGLEDAJ MESSAGE ENCRYPT I DECRYPT RADE LI
+            encrypted_message = self.message_encrypt(compressed_message, session_key, algorithm)
 
-        encrypted_message = self.message_encrypt(compressed_message, session_key, algorithm)
+            encrypted_session_key = self.session_key_encrypt(session_key, public_key_b)
 
-        encrypted_session_key = self.session_key_encrypt(session_key, public_key_b)
+            final_message = self.concate(encrypted_session_key, encrypted_message)
 
-        final_message = self.concate(encrypted_session_key, encrypted_message)
+            final_message = self.concate(public_key_b.key_id, final_message)
+            final_message = self.concate(algorithm, final_message)
+            final_message = self.concate("1", final_message)
+        else:
+            final_message = self.concate("0", final_message)
+
+        # RADIX
 
         return final_message
 
@@ -58,44 +75,27 @@ class PGP:
     
     def message_encrypt(self, message, session_key, algorithm) -> bytes:
         """Final method for encrypting message with session key"""
-
-        padder = padding.PKCS7(128).padder()
-        padded_message = padder.update(message) + padder.finalize()
-        encryptor = self.create_cipher(session_key, algorithm, getrandbits(128)).encryptor()
-
-        encrypted_message = encryptor.update(padded_message) 
-        encrypted_message += encryptor.finalize()
-
-        return encrypted_message
-    
-    def create_cipher(self, session_key, algorithm, initialization_vector):
-        """Final method for creating new cipher object for given algorithm and session key"""
+        cipher = None
         if algorithm == "Cast5":
-            return base.Cipher(
-                algorithms.Cast5(session_key),
-                modes.CBC(initialization_vector),
-                backend=default_backend()
-            )
-        else:
-            return base.Cipher(
-                algorithms.AES128(session_key),
-                modes.CBC(initialization_vector),
-                backend=default_backend()
-            )
+            cipher = CAST.new(session_key, CAST.MODE_OPENPGP)
+            return cipher.encrypt(message)
+        else: 
+            # AES128
+            cipher = AES.new(session_key, AES.MODE_OPENPGP)
+            ciphertext, tag = cipher.encrypt_and_digest(message)
+            return ciphertext
 
     def message_decrypt(self, message, session_key, algorithm) -> bytes:
         """Final method for decrypting message using session_key"""
-
-        decryptor = self.create_cipher(session_key, algorithm, message[:16]).decryptor()
-
-        decrypted_message = decryptor.update(message)
-        decrypted_message += decryptor.finalize()
-
-        padder = padding.PKCS7(128).unpadder()
-
-        final_message = padder.update(decrypted_message) + padder.finalize()
-
-        return final_message
+        if algorithm == "Cast5":
+            eiv = message[:CAST.block_size + 2]
+            cipher = CAST.new(session_key, CAST.MODE_OPENPGP, eiv)
+            return cipher.decrypt(message[CAST.block_size + 2:])
+        else: 
+            # AES128
+            eiv = message[:AES.block_size + 2]
+            cipher = AES.new(session_key, AES.MODE_OPENPGP, eiv)
+            return cipher.decrypt(message[AES.block_size + 2:])
     
     def concate(self, left_message, right_message) -> bytes:
         """Concate left and right message into one message"""

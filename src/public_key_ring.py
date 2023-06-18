@@ -16,7 +16,7 @@ class PublicKeyRing:
         self.key_type = key_type
 
     def load_public_key_rings(user):
-        """Loads the json file containing private key rings and returns array of PrivateKeyRing objects"""
+        """Loads the json file containing public key rings and returns array of PublicKeyRing objects"""
         json_file = open(f"users/{user}/public_key_rings", "r")
 
         public_ring_dict = json.loads(json_file.read())

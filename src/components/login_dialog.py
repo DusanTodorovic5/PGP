@@ -1,5 +1,4 @@
-from tkinter import ttk, simpledialog
-import tkinter as tk
+from tkinter import ttk
 from ttkthemes import ThemedTk
 from components.snackbar import Snackbar
 
@@ -15,9 +14,13 @@ class LoginDialog():
             self.field1_entry = ttk.Entry(self.root)
             self.field1_entry.grid(row=0, column=1, padx=5, pady=5)
 
-            self.generate_button = ttk.Button(self.root, text="Login", command=lambda this=self: LoginDialog.generate(this))
-            self.generate_button.grid(row=1, column=1, padx=5, pady=5)
+            self.generate_button = ttk.Button(
+                 self.root, 
+                 text="Login", 
+                 command=lambda this=self: LoginDialog.generate(this)
+            )
 
+            self.generate_button.grid(row=1, column=1, padx=5, pady=5)
             self.root.mainloop()
 
         def generate(self):

@@ -10,10 +10,7 @@ class NewKeyDialog(simpledialog.Dialog):
             self.keys = None
             super().__init__(master, title="New key pair dialog")
 
-
         def body(self, master):
-            # self.root = master
-            # Create the text fields
             self.name_label = ttk.Label(master, text='Name:')
             self.name_label.grid(row=0, column=0, padx=5, pady=5)
             self.name_entry = ttk.Entry(master)
@@ -24,14 +21,12 @@ class NewKeyDialog(simpledialog.Dialog):
             self.email_entry = ttk.Entry(master)
             self.email_entry.grid(row=1, column=1, padx=5, pady=5)
 
-            # Create the drop-down menu
             self.algorithm_label = ttk.Label(master, text='Algorithm type:')
             self.algorithm_label.grid(row=3, column=0, padx=5, pady=5)
             self.algorithm_var = tk.StringVar()
             self.algorithm_dropdown = ttk.OptionMenu(master, self.algorithm_var, 'RSA', 'RSA', 'DSA&ElGamal')
             self.algorithm_dropdown.grid(row=3, column=1, padx=5, pady=5)
 
-            # Create the drop-down menu
             self.key_size_label = ttk.Label(master, text='Key size:')
             self.key_size_label.grid(row=4, column=0, padx=5, pady=5)
             self.key_size_var = tk.StringVar()
@@ -39,7 +34,6 @@ class NewKeyDialog(simpledialog.Dialog):
             self.key_size_dropdown.grid(row=4, column=1, padx=5, pady=5)
 
         def buttonbox(self):
-            # Create the buttons
             box = ttk.Frame(self)
 
             self.cancel_button = ttk.Button(box, text="Cancel", command=self.cancel)
