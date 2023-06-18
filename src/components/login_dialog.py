@@ -15,8 +15,6 @@ class LoginDialog():
             self.field1_entry = ttk.Entry(self.root)
             self.field1_entry.grid(row=0, column=1, padx=5, pady=5)
 
-      
-
             self.generate_button = ttk.Button(self.root, text="Login", command=lambda this=self: LoginDialog.generate(this))
             self.generate_button.grid(row=1, column=1, padx=5, pady=5)
 
@@ -26,7 +24,7 @@ class LoginDialog():
             user = self.field1_entry.get()
 
             if user == "" or user not in ["dusan", "slavica"]:
-                Snackbar(self.master).show(message="User does not exist", duration=1500)
+                Snackbar(self.master).show(message="User does not exist")
                 return
             
             self.user = user
