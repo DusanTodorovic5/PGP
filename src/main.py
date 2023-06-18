@@ -10,10 +10,10 @@ from components.import_private_key_dialog import ImportPrivateKeyDialog
 
 class PGPApp:
     def __init__(self) -> None:
+        self.user = self.login_user()
+
         self.root = ThemedTk(theme="breeze")
         self.root.title("PGP")
-
-        self.user = LoginDialog(self.root).user
 
         self.private_ring_table = PrivateKeyRingTable(self.root, self.user)
         self.public_ring_table = PublicKeyRingTable(self.root, self.user)
@@ -59,6 +59,10 @@ class PGPApp:
         if dialog.public_key is not None:
             self.private_ring_table.import_key(dialog.public_key)
 
+    def login_user(self):
+        user_login = LoginDialog()
+        
+        return user_login.user
 
 if __name__ == "__main__":
     app = PGPApp()

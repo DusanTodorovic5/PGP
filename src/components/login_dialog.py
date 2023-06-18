@@ -1,26 +1,26 @@
 from tkinter import ttk, simpledialog
 import tkinter as tk
+from ttkthemes import ThemedTk
 from components.snackbar import Snackbar
 
-class LoginDialog(simpledialog.Dialog):
-        def __init__(self, master):
+class LoginDialog():
+        def __init__(self):
             self.user = None
-            super().__init__(master, title="Login dialog")
 
-        def body(self, master):
-            self.field1_label = ttk.Label(master, text='User:')
+            self.root = ThemedTk(theme="breeze")
+            self.root.title("PGP")
+
+            self.field1_label = ttk.Label(self.root, text='User:')
             self.field1_label.grid(row=0, column=0, padx=5, pady=5)
-            self.field1_entry = ttk.Entry(master)
+            self.field1_entry = ttk.Entry(self.root)
             self.field1_entry.grid(row=0, column=1, padx=5, pady=5)
 
-        def buttonbox(self):
-            # Create the buttons
-            box = ttk.Frame(self)
+      
 
-            self.generate_button = ttk.Button(box, text="Login", command=self.generate)
-            self.generate_button.pack(side='left', padx=5, pady=5)
+            self.generate_button = ttk.Button(self.root, text="Login", command=lambda this=self: LoginDialog.generate(this))
+            self.generate_button.grid(row=1, column=1, padx=5, pady=5)
 
-            box.pack()
+            self.root.mainloop()
 
         def generate(self):
             user = self.field1_entry.get()
@@ -30,5 +30,5 @@ class LoginDialog(simpledialog.Dialog):
                 return
             
             self.user = user
-            
-            self.ok()
+
+            self.root.destroy()
