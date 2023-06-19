@@ -51,6 +51,12 @@ class PrivateKeyRingTable:
         
         dialog = ExportDialog(self.root, self.private_key_rings[item_index])
 
+        if dialog.for_deletion == True:
+            self.private_key_rings.pop(item_index)
+            self.update_table()
+
+            PrivateKeyRing.save_private_key_rings(self.private_key_rings, self.user)
+
     def update_table(self):
         self.table.delete(*(self.table.get_children()))
 
@@ -72,7 +78,7 @@ class PrivateKeyRingTable:
             encryption_algortihm = DSAElGamalPGP()
 
         decoded_keys_sign = encryption_algortihm.decode_keys(keys["sign"])
-        decoded_keys_encryption = encryption_algortihm.decode_keys(keys["encryption"])
+        decoded_keys_encryption = keys["encryption"]
 
         private_key_ring_sign = PrivateKeyRing(
             time.time(),
@@ -84,6 +90,7 @@ class PrivateKeyRingTable:
             password,
             data["key_size"]
         )
+
 
         private_key_ring_encryption = PrivateKeyRing(
             time.time(),

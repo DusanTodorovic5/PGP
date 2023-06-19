@@ -8,19 +8,23 @@ class PublicKeyRingTable:
         self.root = root
         self.user = user
         self.public_key_rings = PublicKeyRing.load_public_key_rings(user)
-
+        self.clicked = False
         table_frame = ttk.Frame(root)
         table_frame.pack()
 
         table_label = ttk.Label(
             table_frame, 
-            text="Public keys ring", 
+            text="Public keys ring (click to delete)", 
             font=("Arial", 16)
         )
 
         table_label.pack()
 
         self.table = ttk.Treeview(table_frame, columns=PublicKeyRingTable.columns, show='headings')
+        self.table.bind(
+            "<<TreeviewSelect>>", 
+            lambda event, this=self: self.on_row_click(event)
+        )
 
         for col in PublicKeyRingTable.columns:
             self.table.heading(col, text=col)
@@ -42,3 +46,16 @@ class PublicKeyRingTable:
         PublicKeyRing.save_public_key_rings(self.public_key_rings, self.user)
 
         self.update_table()
+
+    def on_row_click(self, event):
+        if not self.clicked:
+            selected_item = self.table.focus()
+            item_index = int(self.table.index(selected_item))
+
+            self.public_key_rings.pop(item_index)
+            self.update_table()
+            PublicKeyRing.save_public_key_rings(self.public_key_rings, self.user)
+            
+            self.clicked = True
+        else:
+            self.clicked = False

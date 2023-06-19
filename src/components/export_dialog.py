@@ -7,6 +7,7 @@ from components.enter_password_dialog import ConfirmExportPassowordDialog
 class ExportDialog(simpledialog.Dialog):
         def __init__(self, master, key_ring):
             self.key_ring = key_ring
+            self.for_deletion = False
             super().__init__(master, title="Export dialog")
 
         def body(self, master):
@@ -18,6 +19,9 @@ class ExportDialog(simpledialog.Dialog):
 
             self.cancel_button = ttk.Button(box, text="Cancel", command=self.cancel)
             self.cancel_button.pack(side='left', padx=5, pady=5)
+
+            self.delete_button = ttk.Button(box, text="Delete", command=self.delete_function)
+            self.delete_button.pack(side='left', padx=5, pady=5)
 
             self.export_public_button = ttk.Button(box, text="Export public key", command=self.export_public)
             self.export_public_button.pack(side='left', padx=5, pady=5)
@@ -47,3 +51,7 @@ class ExportDialog(simpledialog.Dialog):
         def export_private(self):
             self.ok()
             dialog = ConfirmExportPassowordDialog(self.master, self.key_ring)
+
+        def delete_function(self):
+             self.for_deletion = True
+             self.ok()

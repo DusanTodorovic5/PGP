@@ -11,13 +11,16 @@ from tkinter import ttk
 from components.import_private_key_dialog import ImportPrivateKeyPasswordDialog
 
 class PrivateKeyRing:
-    def __init__(self, timestamp, public_key, private_key, email, algorithm, key_type, password, key_size, encrypt=True) -> None:
+    def __init__(self, timestamp, public_key, private_key, email, algorithm, key_type, password, key_size, p=None, q=None, h=None, encrypt=True) -> None:
         self.timestamp = timestamp
         self.public_key = public_key.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "").replace("\n", "").strip()
         self.id = self.public_key[-8:]
         self.algorithm = algorithm
         self.key_type = key_type
         self.key_size = key_size
+        self.q = q
+        self.p = p
+        self.h = h
 
         if encrypt and password is not None:
             self.encrypted_private_key = self.encrypt_private_key(
@@ -73,6 +76,9 @@ class PrivateKeyRing:
                 entry["key_type"],
                 entry["password"],
                 entry["key_size"],
+                entry["p"],
+                entry["q"],
+                entry["h"],
                 False
             )
             for entry
@@ -91,7 +97,10 @@ class PrivateKeyRing:
                 "algorithm": private_key_ring.algorithm,
                 "key_type": private_key_ring.key_type,
                 "password": str(private_key_ring.password),
-                "key_size": private_key_ring.key_size
+                "key_size": private_key_ring.key_size,
+                "p": private_key_ring.p,
+                "q": private_key_ring.q,
+                "h": private_key_ring.h
             })
 
         with open(f"users/{user}/private_key_rings", "w") as file:
