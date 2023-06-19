@@ -51,3 +51,7 @@ class DSAElGamalPGP (PGP):
                 "public": key_b
             }
         }
+    
+    def type(self) -> str:
+        """Virtual method for returning type of asymmetric algorithm"""
+        return "DSA&ElGamal"

@@ -40,8 +40,7 @@ class PrivateKeyRingSelect:
             self.table.column(col, width=160)
 
         for private_ring in self.private_key_rings:
-            if private_ring.key_type == "Sign":
-                self.table.insert('', 'end', values=private_ring.create_table_row())
+            self.table.insert('', 'end', values=private_ring.create_table_row())
 
         self.table.pack(fill='x')
 
@@ -52,7 +51,7 @@ class PrivateKeyRingSelect:
 
 class GetSendAuthDialog(simpledialog.Dialog):
     def __init__(self, master, private_key_rings) -> None:
-        self.private_key_rings = private_key_rings
+        self.private_key_rings = [private_key for private_key in private_key_rings.copy() if private_key.key_type == "Sign"]
         self.table = None
         self.private_key_ring = None
         self.password = None

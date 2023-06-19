@@ -81,7 +81,8 @@ class PrivateKeyRingTable:
             data["email"],
             data["algorithm"],
             "Sign",
-            password
+            password,
+            data["key_size"]
         )
 
         private_key_ring_encryption = PrivateKeyRing(
@@ -91,7 +92,8 @@ class PrivateKeyRingTable:
             data["email"],
             data["algorithm"],
             "Encryption",
-            password
+            password,
+            data["key_size"]
         )
 
         self.private_key_rings.append(private_key_ring_encryption)

@@ -7,13 +7,14 @@ from cryptography.hazmat.backends import default_backend
 import json
 
 class PublicKeyRing:
-    def __init__(self, timestamp, public_key, email, algorithm, key_type) -> None:
+    def __init__(self, timestamp, public_key, email, algorithm, key_type, key_size) -> None:
         self.timestamp = timestamp
         self.public_key = public_key.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "").replace("\n", "").strip()
         self.id = self.public_key[-8:]
         self.user_id = email
         self.algorithm = algorithm
         self.key_type = key_type
+        self.key_size = key_size
 
     def load_public_key_rings(user):
         """Loads the json file containing public key rings and returns array of PublicKeyRing objects"""
@@ -29,7 +30,8 @@ class PublicKeyRing:
                 entry["public_key"],
                 entry["user_id"],
                 entry["algorithm"],
-                entry["key_type"]
+                entry["key_type"],
+                entry["key_size"]
             ) 
             for entry
             in public_ring_dict
@@ -44,7 +46,8 @@ class PublicKeyRing:
                 "public_key": public_key_ring.public_key,
                 "user_id": public_key_ring.user_id,
                 "algorithm": public_key_ring.algorithm,
-                "key_type": public_key_ring.key_type
+                "key_type": public_key_ring.key_type,
+                "key_size": public_key_ring.key_size
             })
 
         with open(f"users/{user}/public_key_rings", "w") as file:
@@ -59,3 +62,9 @@ class PublicKeyRing:
             self.public_key,
             self.user_id
         )
+    
+    def find_key_with_id(public_key_rings, key_id):
+        for public_key_ring in public_key_rings:
+            if public_key_ring.id == key_id:
+                return public_key_ring
+        return None

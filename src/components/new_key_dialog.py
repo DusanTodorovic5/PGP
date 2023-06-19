@@ -51,7 +51,7 @@ class NewKeyDialog(simpledialog.Dialog):
             key_size_value = self.key_size_var.get()
 
             if name_value == "" or email_value == "":
-                Snackbar(self.master).show(message="You have to enter all values!", duration=1500)
+                Snackbar(self.master).show(message="You have to enter all values!")
                 return
 
             self.data = { "name": name_value, "email": email_value, "algorithm": algorithm_value, "key_size": int(key_size_value) }

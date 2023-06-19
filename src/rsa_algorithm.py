@@ -19,25 +19,31 @@ class RSAPGP (PGP):
     def session_key_decrypt(self, encrypted_session_key, private_key) -> bytes:
         """Derived method for decrypting session key using private key of receiver"""
         cipher = PKCS1_OAEP.new(
-            RSA.import_key(private_key)
+            RSA.import_key(f"-----BEGIN PRIVATE KEY-----\n{private_key}\n-----END PRIVATE KEY-----")
         )
 
-        return cipher.decrypt(encrypted_session_key.encode())
+        return cipher.decrypt(encrypted_session_key)
 
     def sign(self, message, private_key) -> bytes:
-        hasher = SHA256.new()
-
-        hasher.update(message.encode())
+        hasher = SHA256.new(message.encode())
 
         signer = pkcs1_15.new(
-            RSA.import_key(private_key)
+            RSA.import_key(f"-----BEGIN RSA PRIVATE KEY-----\n{private_key.decode()}\n-----END RSA PRIVATE KEY-----")
         )
 
         return signer.sign(hasher)
 
     def verify(self, signature, message, public_key) -> bytes:
-        verifier = pkcs1_15.new(public_key)
-        return True if verifier.verify(signature, message) else False
+        hasher = SHA256.new(message)
+
+        verifier = pkcs1_15.new(
+            RSA.import_key(f"-----BEGIN RSA PUBLIC KEY-----\n{public_key}\n-----END RSA PUBLIC KEY-----")
+        )
+        try:
+            verifier.verify(hasher, signature)
+            return True
+        except:
+            return False
         
     def generate_keys(self, key_size) -> bytes:
         key_a = rsa.generate_private_key(
@@ -60,3 +66,7 @@ class RSAPGP (PGP):
                 "public": key_b.public_key()
             }
         }
+    
+    def type(self) -> str:
+        """Virtual method for returning type of asymmetric algorithm"""
+        return "RSA"

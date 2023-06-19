@@ -1,7 +1,7 @@
 from tkinter import ttk, filedialog, simpledialog
 import tkinter as tk
 from cryptography.hazmat.primitives import hashes
-from private_key_ring import PrivateKeyRing
+# from private_key_ring import PrivateKeyRing
 from components.snackbar import Snackbar
 import base64
 
@@ -52,12 +52,12 @@ class ImportPrivateKeyDialog:
                 with open(file_path, 'r') as file:
                     lines = file.readlines()
 
-                    dialog = ImportPrivateKeyPasswordDialog(master, lines[4].replace("# ", "").replace("\n", ""))
+                    dialog = ImportPrivateKeyPasswordDialog(master, lines[5].replace("# ", "").replace("\n", ""))
 
                     if dialog.logged is False:
                         return
 
-                    data = [line.replace("# ", "").replace("\n", "") for line in lines[:5]]
+                    data = [line.replace("# ", "").replace("\n", "") for line in lines[:6]]
 
                     private_key = ""
                     public_key = ""
@@ -85,5 +85,6 @@ class ImportPrivateKeyDialog:
                         data[1],
                         data[2],
                         data[4],
+                        data[5],
                         False
                     )

@@ -8,14 +8,16 @@ import os
 import json
 import base64
 from tkinter import ttk
+from components.import_private_key_dialog import ImportPrivateKeyPasswordDialog
 
 class PrivateKeyRing:
-    def __init__(self, timestamp, public_key, private_key, email, algorithm, key_type, password, encrypt=True) -> None:
+    def __init__(self, timestamp, public_key, private_key, email, algorithm, key_type, password, key_size, encrypt=True) -> None:
         self.timestamp = timestamp
         self.public_key = public_key.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "").replace("\n", "").strip()
         self.id = self.public_key[-8:]
         self.algorithm = algorithm
         self.key_type = key_type
+        self.key_size = key_size
 
         if encrypt and password is not None:
             self.encrypted_private_key = self.encrypt_private_key(
@@ -70,6 +72,7 @@ class PrivateKeyRing:
                 entry["algorithm"],
                 entry["key_type"],
                 entry["password"],
+                entry["key_size"],
                 False
             )
             for entry
@@ -87,7 +90,8 @@ class PrivateKeyRing:
                 "user_id": private_key_ring.user_id,
                 "algorithm": private_key_ring.algorithm,
                 "key_type": private_key_ring.key_type,
-                "password": str(private_key_ring.password)
+                "password": str(private_key_ring.password),
+                "key_size": private_key_ring.key_size
             })
 
         with open(f"users/{user}/private_key_rings", "w") as file:
@@ -103,3 +107,14 @@ class PrivateKeyRing:
             self.encrypted_private_key,
             self.user_id
         )
+
+    def find_key_with_id(private_key_rings, key_id, master):
+        for private_key_ring in private_key_rings:
+            if private_key_ring.id == key_id:
+                dialog = ImportPrivateKeyPasswordDialog(master, private_key_ring.password)
+
+                if dialog.logged is False:
+                    return None, None
+                
+                return private_key_ring, dialog.password
+        return None, None

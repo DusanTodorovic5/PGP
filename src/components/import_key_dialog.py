@@ -11,14 +11,15 @@ class ImportKeyDialog():
                 with open(file_path, 'r') as file:
                     lines = file.readlines()
 
-                    data = [line.replace("# ", "").replace("\n", "") for line in lines[:4]]
-                    key = "".join(lines[4:])
+                    data = [line.replace("# ", "").replace("\n", "") for line in lines[:5]]
+                    key = "".join(lines[5:])
 
                     self.public_key = PublicKeyRing(
                         float(data[0]),
                         key,
                         data[3],
                         data[1],
-                        data[2]
+                        data[2],
+                        data[4]
                     )
             

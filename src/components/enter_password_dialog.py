@@ -45,6 +45,7 @@ class ConfirmExportPassowordDialog(simpledialog.Dialog):
                 file.write(f"# {self.key_ring.key_type}\n")
                 file.write(f"# {self.key_ring.user_id}\n")
                 file.write(f"# {self.key_ring.password}\n")
+                file.write(f"# {self.key_ring.key_size}\n")
                 file.write("-----BEGIN PRIVATE KEY-----\n")
                 wrapped_data = textwrap.wrap(
                      base64.b64encode(self.key_ring.encrypted_private_key).decode('utf-8'),

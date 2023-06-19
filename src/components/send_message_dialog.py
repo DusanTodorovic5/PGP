@@ -74,6 +74,7 @@ class SendMessageDialog(simpledialog.Dialog):
         self.secret = tk.IntVar()
         self.selected_keys = []
         self.message = None
+        self.algorithm = "RSA"
 
         super().__init__(master, title="Get Authentication")
 
@@ -92,8 +93,14 @@ class SendMessageDialog(simpledialog.Dialog):
 
         self.text_label = ttk.Label(master, text='Message:')
         self.text_label.pack()
-        self.text_field = tk.Text(master, height=3)
+        self.text_field = tk.Text(master, height=3, width=150)
         self.text_field.pack()
+
+        self.algorithm_label = ttk.Label(master, text='Algorithm type: ')
+        self.algorithm_label.pack()
+        self.algorithm_var = tk.StringVar()
+        self.algorithm_dropdown = ttk.OptionMenu(master, self.algorithm_var, 'Cast5', 'Cast5', 'AES')
+        self.algorithm_dropdown.pack()
 
         self.secret_checkbox = Checkbutton(master, text="Ensure secret", variable=self.secret)
         self.secret_checkbox.pack()
@@ -116,9 +123,9 @@ class SendMessageDialog(simpledialog.Dialog):
         self.upper_table.import_key(public_key_ring)
 
     def proceed(self):
-        self.secret = bool(self.secret)
+        self.is_secret = bool(self.secret)
         self.selected_keys = self.lower_table.public_key_rings.copy()
-        self.message = self.text_field.get()
+        self.message = self.text_field.get("1.0", tk.END)
+        self.algorithm = self.algorithm_var.get()
 
         self.ok()
-        pass
