@@ -70,6 +70,9 @@ class PrivateKeyRingTable:
         self.update_table()
 
     def add_key_from_encryption_algorithm(self, keys, data, password):
+        if data == None:
+            return
+        
         encryption_algortihm = None
 
         if data["algorithm"] == "RSA":

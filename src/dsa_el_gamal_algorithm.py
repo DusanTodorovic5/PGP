@@ -64,7 +64,7 @@ class DSAElGamalPGP (PGP):
                 "public": key_b.publickey(),
                 "p": key_b.p,
                 "q": key_b.g,
-                "h": power(key_b.g, key_b.x, key_b.p)
+                "h": pow(key_b.g, key_b.x, key_b.p)
             }
         }
     
