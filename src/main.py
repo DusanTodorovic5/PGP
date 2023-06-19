@@ -13,6 +13,7 @@ from rsa_algorithm import RSAPGP
 from dsa_el_gamal_algorithm import DSAElGamalPGP
 import base64
 from components.snackbar import Snackbar
+
 class PGPApp:
     def __init__(self) -> None:
         self.user = self.login_user()

@@ -94,17 +94,31 @@ class PrivateKeyRingTable:
             data["key_size"]
         )
 
-
-        private_key_ring_encryption = PrivateKeyRing(
-            time.time(),
-            decoded_keys_encryption["public"],
-            decoded_keys_encryption["private"],
-            data["email"],
-            data["algorithm"],
-            "Encryption",
-            password,
-            data["key_size"]
-        )
+        if data["algorithm"] == "RSA":
+            private_key_ring_encryption = PrivateKeyRing(
+                time.time(),
+                decoded_keys_encryption["public"],
+                decoded_keys_encryption["private"],
+                data["email"],
+                data["algorithm"],
+                "Encryption",
+                password,
+                data["key_size"]
+            )
+        else:
+            private_key_ring_encryption = PrivateKeyRing(
+                time.time(),
+                decoded_keys_encryption["public"],
+                decoded_keys_encryption["private"],
+                data["email"],
+                data["algorithm"],
+                "Encryption",
+                password,
+                data["key_size"],
+                decoded_keys_encryption["p"],
+                decoded_keys_encryption["q"],
+                decoded_keys_encryption["h"]
+            )
 
         self.private_key_rings.append(private_key_ring_encryption)
         self.private_key_rings.append(private_key_ring_sign)
